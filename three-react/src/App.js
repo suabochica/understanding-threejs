@@ -1,48 +1,64 @@
-import './App.css';
+import React, { Component } from 'react';
 import * as THREE from 'three';
+
+import './App.css';
 
 let scene, camera, renderer, cube;
 
-function init() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x2a3b4c);
+class App extends Component {
 
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-  );
+  constructor(props) {
+    super(props);
+    this.animateCube = this.animateCube.bind(this);
+  }
 
-  renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x2a3b4c);
 
-  document.body.appendChild(renderer.domElement);
+    camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+    );
 
-  let geometry = new THREE.BoxGeometry();
-  let material = new THREE.MeshBasicMaterial({
-    color: 0x44aa88,
-    wireframe: true
-  });
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-  cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-  camera.position.z = 5;
+    // document.body.appendChild(renderer.domElement);
 
-  animateCube();
-}
+    let geometry = new THREE.BoxGeometry();
+    let material = new THREE.MeshBasicMaterial({
+      color: 0x44aa88,
+      wireframe: true
+    });
 
-function animateCube() {
-  requestAnimationFrame(animateCube);
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+    camera.position.z = 5;
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+    // animateCube();
+    return renderer.domElement;
+  }
 
-  renderer.render(scene, camera);
-}
+  animateCube() {
+    requestAnimationFrame(this.animateCube);
 
-function App() {
-  return (
-    <div className="App">{init()}</div>
-  );
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+
+    renderer.render(scene, camera);
+  }
+
+  componentDidMount() {
+    document.getElementById("js-render").appendChild(this.init());
+    this.animateCube();
+  }
+
+  render() {
+    return (
+      <div id="js-render" className="App"></div>
+    );
+  }
 }
 
 export default App;
