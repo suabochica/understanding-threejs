@@ -19,20 +19,26 @@
 </head>
 
 <body>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.js"></script>
     <script type="module">
-        import * as THREE from './three.module.js';
-        import { OrbitControls } from './OrbitControls.js';
-
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
+        const persCamera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
+            0.1, // default value
+            2000, // default value
+        );
+
+        const additionalCamera = new THREE.OrthographicCamera(
+            5,
+            -5,
+            5,
+            -5,
             3, // default value
             10
         );
 
-        const helper = new THREE.CameraHelper(camera);
+        const helper = new THREE.CameraHelper(additionalCamera);
 
         scene.add(helper);
 
@@ -48,7 +54,7 @@
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-        renderer.render(scene, camera);
+        renderer.render(scene, persCamera);
 
         const geometry = new THREE.BoxGeometry();
         const material = new THREE.MeshBasicMaterial({
@@ -58,25 +64,23 @@
         const cube = new THREE.Mesh(geometry, material);
 
         scene.add(cube);
-        camera.position.z = 5;
+        persCamera.position.z = 5;
 
-        let controls = new OrbitControls(camera, renderer.domElement);
-        controls.minDistance = 3;
-        controls.maxDistance = 10;
-        // controls.enableZoom = false;
-        // controls.enableRotate = false;
-        controls.enableDamping = true;
-        controls.dampingControl = 0.5;
-        controls.maxPolarAngle = Math.PI;
-        controls.screenSpacePanning = true;
-
+        let i = 0;
         const animateCube = function () {
             requestAnimationFrame(animateCube);
+
+            persCamera.lookAt(additionalCamera.position);
+
+            persCamera.position.x = Math.cos(i) * 30;
+            persCamera.position.z = Math.sin(i) * 30;
+
+            i += 0.01;
 
             cube.rotation.x += 0.01;
             cube.rotation.y += 0.01;
 
-            renderer.render(scene, camera);
+            renderer.render(scene, persCamera);
         }
 
         animateCube();
