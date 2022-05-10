@@ -39,12 +39,6 @@
         const renderer = new THREE.WebGLRenderer();
 
         scene.background = new THREE.Color(0x2a3b4c);
-        scene.fog = new THREE.Fog(0xd8d8d8, 0.1, 8)
-
-        // const loader = new THREE.TextureLoader();
-        // loader.load("https://c.opencritic.com/images/games/6087/masthead_u4ncdr6JBj0dnFoadRYstwAa3FPdWWvx.jpg", function (texture) {
-        //     scene.background = texture;
-        // })
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -69,6 +63,15 @@
         controls.dampingControl = 0.5;
         controls.maxPolarAngle = Math.PI;
         controls.screenSpacePanning = true;
+
+        window.addEventListener('resize', resizeWindow);
+
+        function resizeWindow() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.render(scene, camera);
+        }
 
         const animateCube = function () {
             requestAnimationFrame(animateCube);
