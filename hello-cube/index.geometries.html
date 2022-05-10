@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Cube</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.js"></script> -->
+    <script type="module">
+        import * as THREE from './three.module.js';
+        import { OrbitControls } from './OrbitControls.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            3, // default value
+            10
+        );
+
+        const helper = new THREE.CameraHelper(camera);
+
+        scene.add(helper);
+
+        const renderer = new THREE.WebGLRenderer();
+
+        scene.background = new THREE.Color(0x2a3b4c);
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        renderer.render(scene, camera);
+
+        let box = new THREE.BoxGeometry(2, 2, 2, 4, 4, 4);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x44aa88,
+            wireframe: true
+        });
+        var object = new THREE.Mesh(box, material);
+        scene.add(object);
+
+        const circle = new THREE.CircleGeometry(2, 32, 0, Math.PI);
+        var object = new THREE.Mesh(circle, material);
+
+        object.position.x = 5;
+        scene.add(object);
+
+        const cone = new THREE.ConeGeometry();
+        var object = new THREE.Mesh(cone, material);
+
+        object.position.x = -5;
+        scene.add(object);
+
+        const cylinder = new THREE.CylinderGeometry(0.5, 0.5, 2, 16, 8);
+        var object = new THREE.Mesh(cylinder, material);
+
+        object.position.y = 5;
+        scene.add(object);
+
+        const plane = new THREE.PlaneGeometry(2, 2, 4, 6);
+        var object = new THREE.Mesh(plane, material);
+
+        object.position.y = -5;
+        scene.add(object);
+
+        const tetrahedron = new THREE.TetrahedronGeometry(1.5);
+        var object = new THREE.Mesh(tetrahedron, material);
+
+        object.position.x = -5;
+        object.position.y = 5;
+        scene.add(object);
+
+        const sphere = new THREE.SphereGeometry();
+        var object = new THREE.Mesh(sphere, material);
+
+        object.position.x = 5;
+        object.position.y = 5;
+        scene.add(object);
+
+        const torus = new THREE.TorusGeometry(1, 0.5, 16, 16);
+        var object = new THREE.Mesh(torus, material);
+
+        object.position.x = -5;
+        object.position.y = -5;
+        scene.add(object);
+
+        const ring = new THREE.RingGeometry(1, 1.5, 16);
+        var object = new THREE.Mesh(ring, material);
+
+        object.position.x = 5;
+        object.position.y = -5;
+        scene.add(object);
+
+        camera.position.z = 10;
+
+        let controls = new OrbitControls(camera, renderer.domElement);
+        controls.minDistance = 3;
+        controls.enableDamping = true;
+        controls.dampingControl = 0.5;
+        controls.maxPolarAngle = Math.PI;
+        controls.screenSpacePanning = true;
+
+        window.addEventListener('resize', resizeWindow);
+
+        function resizeWindow() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.render(scene, camera);
+        }
+
+        const animateCube = function () {
+            requestAnimationFrame(animateCube);
+
+            scene.traverse(function (object) {
+                if (object.isMesh === true) {
+                    object.rotation.x += 0.01;
+                    object.rotation.y += 0.01;
+
+                }
+            })
+
+            renderer.render(scene, camera);
+        }
+
+        animateCube();
+    </script>
+</body>
+
+</html>
