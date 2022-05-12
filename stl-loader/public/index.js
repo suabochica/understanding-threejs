@@ -1,6 +1,7 @@
 import * as THREE from './threejs/three.module.js';
-import { STLLoader } from './threejs/STLLoader.js'
-import { OrbitControls } from './threejs/OrbitControls.js'
+import { STLLoader } from './threejs/STLLoader.js';
+import { OrbitControls } from './threejs/OrbitControls.js';
+import { ThreeMFLoader } from './threejs/3MFLoader.js';
 
 let scene, camera, renderer, object;
 
@@ -21,6 +22,8 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     scene.add(object);
+    let mfLoader = new ThreeMFLoader();
+    mfLoader.load();
 
     let control = new OrbitControls(camera, renderer.domElement);
 
@@ -49,5 +52,3 @@ loader.load('models/yoshi-head.stl', (model) => {
 
 init();
 });
-
-
