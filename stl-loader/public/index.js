@@ -21,9 +21,15 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    scene.add(object);
+    // scene.add(object);
+
+    // mfLoader has already a mesh
     let mfLoader = new ThreeMFLoader();
-    mfLoader.load();
+    mfLoader.load('models/buckineer.3dm', (mfObject) => {
+        mfObject.position.set(0, 0, 0);
+        mfObject.position.x = -Math.PI / 2;
+        scene.add(mfObject);
+    });
 
     let control = new OrbitControls(camera, renderer.domElement);
 
@@ -34,6 +40,10 @@ function init() {
     let backLight = new THREE.DirectionalLight(0xffffff);
     backLight.position.set(0, 0, -10);
     scene.add(backLight)
+
+    let hemisphereLight = new THREE.HemisphereLight(0xffffff);
+    hemisphereLight.position.set(0, 100, 0);
+    scene.add(hemisphereLight)
 
     animate();
 }
@@ -46,9 +56,9 @@ function animate() {
 
 let loader = new STLLoader();
 loader.load('models/yoshi-head.stl', (model) => {
-    object = new THREE.Mesh(model, new THREE.MeshLambertMaterial({color: 0x00ff00}));
+    object = new THREE.Mesh(model, new THREE.MeshLambertMaterial({ color: 0x00ff00 }));
     object.scale.set(0.05, 0.05, 0.05);
     object.position.set(0, 0, 0);
 
-init();
+    init();
 });
