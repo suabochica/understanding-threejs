@@ -25,6 +25,8 @@
         import { PointerLockControls } from './PointerLockControls.js';
 
         let scene, camera, renderer, pointerControl;
+        let xDirection = 0, zDirection = 0;
+        let initTime, finishTime, deltaTime, velocity;
 
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xfbf1c7);
@@ -49,7 +51,7 @@
         );
         camera.position.y = 10;
 
-        renderer = new THREE.WebGLRenderer({ antialias:true });
+        renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -60,10 +62,63 @@
             pointerControl.lock();
         }
 
+        document.addEventListener('keydown', event => {
+            switch (event.keyCode) {
+                case 37:
+                    xDirection = -1;
+                    break;
+                case 38:
+                    zDirection = 1;
+                    break;
+                case 39:
+                    xDirection = 1;
+                    break;
+                case 40:
+                    zDirection = -1;
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', event => {
+            switch (event.keyCode) {
+                case 37:
+                    xDirection = 0;
+                    break;
+                case 38:
+                    zDirection = 0;
+                    break;
+                case 39:
+                    xDirection = 0;
+                    break;
+                case 40:
+                    zDirection = 0;
+                    break;
+            }
+        });
+
+        initTime = Date.now();
+        velocity = 50;
+
         animate();
 
         function animate() {
             requestAnimationFrame(animate);
+
+            if (pointerControl.isLocked === true) {
+                finishTime = Date.now()
+
+                deltaTime = (finishTime - initTime) / 1000;
+
+                let xDistance = xDirection * velocity * deltaTime;
+                let zDistance = zDirection * velocity * deltaTime;
+
+                pointerControl.moveRight(xDistance);
+                pointerControl.moveForward(zDistance);
+
+                initTime = finishTime;
+
+            }
+
             renderer.render(scene, camera);
         }
 
