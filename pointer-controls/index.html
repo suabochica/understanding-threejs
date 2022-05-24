@@ -25,8 +25,11 @@
         import { PointerLockControls } from './PointerLockControls.js';
 
         let scene, camera, renderer, pointerControl;
+        // variables for movments in x and z axis
         let xDirection = 0, zDirection = 0;
         let initTime, finishTime, deltaTime, velocity;
+        // variables for movments in y axis
+        let jump = false, yInitial, initialVelocity, yTime, yInitialTime;
 
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xfbf1c7);
@@ -76,6 +79,10 @@
                 case 40:
                     zDirection = -1;
                     break;
+                case 83:
+                    if (!jump) yInitialTime = Date.now();
+                    jump = true;
+                    break;
             }
         });
 
@@ -98,6 +105,8 @@
 
         initTime = Date.now();
         velocity = 50;
+        yInitial = 15;
+        initialVelocity = 20;
 
         animate();
 
@@ -112,11 +121,19 @@
                 let xDistance = xDirection * velocity * deltaTime;
                 let zDistance = zDirection * velocity * deltaTime;
 
+                if (jump) {
+                    yTime = ((Date.now() - yInitialTime) / 1000) * 3;
+                    let yDistance = yInitial + (initialVelocity * yTime) - (0.5 * 9.8 * Math.pow(yTime, 2));
+
+                    if (yDistance <= yInitial) jump = false;
+
+                    camera.position.y = yDistance;
+                }
+
                 pointerControl.moveRight(xDistance);
                 pointerControl.moveForward(zDistance);
 
                 initTime = finishTime;
-
             }
 
             renderer.render(scene, camera);
